@@ -287,71 +287,6 @@ def test_merging_fft_field():
     validate_subschema(merged)
 
 
-@cover('_files')
-def test_merging_files_field():
-    root = {
-        '_files': [
-            {
-                'bucket': 'foo',
-                'checksum': 'bar',
-                'key': 'baz',
-                'previewer': 'spam',
-                'size': 1,
-                'type': 'eggs',
-                'version_id': 'version'
-            }
-        ]
-    }
-    # record_id: not found 9/05/2017
-    head = {
-        '_files': [
-            {
-                'bucket': 'foo1',
-                'checksum': 'bar',
-                'key': 'baz',
-                'previewer': 'spam',
-                'size': 1,
-                'type': 'eggs',
-                'version_id': 'version'
-            }
-        ]
-    }
-    update = {
-        '_files': [
-            {
-                'bucket': 'foo2',
-                'checksum': 'bar',
-                'key': 'baz',
-                'previewer': 'spam',
-                'size': 1,
-                'type': 'eggs',
-                'version_id': 'version'
-            }, {
-                'bucket': 'foo2',
-                'checksum': 'bar',
-                'key': 'baz',
-                'previewer': 'spam',
-                'size': 1,
-                'type': 'eggs',
-                'version_id': 'second version'
-            }
-        ]
-    }
-
-    expected_merged = update
-    expected_conflict = [['SET_FIELD', ['_files', 0, 'bucket'], 'foo1']]
-
-    root, head, update, expected_merged = add_arxiv_source(root, head, update, expected_merged)
-    merged, conflict = inspire_json_merge(root, head, update)
-
-    expected_conflict = sort_conflicts(expected_conflict)
-
-    merged = add_arxiv_source(merged)
-    assert merged == expected_merged
-    assert conflict == expected_conflict
-    validate_subschema(merged)
-
-
 @cover('_private_notes')
 def test_merging_private_notes_field():
     root = {
@@ -3670,6 +3605,12 @@ def test_documents_field():
 @pytest.mark.xfail
 @cover('figures')
 def test_figures_field():
+    pytest.fail("Not tested. Merger doesn't have to handle this field.")
+
+
+@pytest.mark.xfail
+@cover('_files')
+def test_files_field():
     pytest.fail("Not tested. Merger doesn't have to handle this field.")
 
 
